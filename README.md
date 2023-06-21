@@ -62,7 +62,7 @@ MaTESe can be used in several ways:
     python src/matese.py --metric matese-qe
     ```
 
-   These commands will populate the files `data/output.scores.txt` and `data/output.spans.txt` with the result of the evaluation.
+   These commands will create the files `data/output.scores.txt` and `data/output.spans.txt` with the result of the evaluation.
 
 1. **Interactively**: If you prefer an interactive mode, you can use MaTESe with Streamlit:
 
