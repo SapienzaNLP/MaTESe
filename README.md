@@ -49,15 +49,21 @@ MaTESe can be used in two ways:
 
 1. **Data file evaluation**: To evaluate sentences stored in data files, you need to populate three files: `sources.txt`, `candidates.txt`, and `references.txt`, which are stored in the `data` directory. Each line in `sources.txt`, `candidates.txt`, and `references.txt` must contain respectively a sentence in the source language, its candidate translation, and the corresponding reference translation (`references.txt` is not needed if you are using MaTESe-QE).
 
-   To run the evaluation, use the following command:
+   To run the evaluation using MaTESe, use the following command:
 
     ```bash
-    python src/matese/predict.py
+    python src/matese.py
     ```
 
-   This command will populate the files `data/output.scores.txt` and `data/output.spans.txt` with the result of the evaluation.
+   If you want to use MaTESe-QE instead:
+   
+    ```bash
+    python src/matese.py --metric matese-qe
+    ```
 
-2. **Interactive mode**: If you prefer an interactive mode, you can use MaTESe with Streamlit:
+   These commands will populate the files `data/output.scores.txt` and `data/output.spans.txt` with the result of the evaluation.
+
+1. **Interactive mode**: If you prefer an interactive mode, you can use MaTESe with Streamlit:
 
     ```bash
     streamlit run src/demo.py
