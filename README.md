@@ -92,6 +92,6 @@ MaTESe can be used in several ways:
    ```
 
 
-## Contact
+## License
 
-For any questions or concerns, feel free to open an issue or contact the repository maintainer directly.
+This work is under the [Attribution-NonCommercial-ShareAlike 4.0 International (CC BY-NC-SA 4.0) license](https://creativecommons.org/licenses/by-nc-sa/4.0/).
