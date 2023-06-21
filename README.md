@@ -46,9 +46,9 @@ https://drive.google.com/file/d/1amAFlHQVpZXqtZWS014RzQ0xpdb6Mymn/view?usp=shari
 
 ### Usage
 
-MaTESe can be used in two ways:
+MaTESe can be used in several ways:
 
-1. **Data file evaluation**: To evaluate sentences stored in data files, you need to populate three files: `sources.txt`, `candidates.txt`, and `references.txt`, which are stored in the `data` directory. Each line in `sources.txt`, `candidates.txt`, and `references.txt` must contain respectively a sentence in the source language, its candidate translation, and the corresponding reference translation (`references.txt` is not needed if you are using MaTESe-QE).
+1. **From the command line**: You need to populate three files: `data/sources.txt`, `data/candidates.txt`, and `data/references.txt`. Each line of these files must contain respectively a sentence in the source language, its candidate translation, and the corresponding reference translation (`references.txt` is not needed if you are using MaTESe-QE).
 
    To run the evaluation using MaTESe, use the following command:
 
@@ -64,13 +64,32 @@ MaTESe can be used in two ways:
 
    These commands will populate the files `data/output.scores.txt` and `data/output.spans.txt` with the result of the evaluation.
 
-1. **Interactive mode**: If you prefer an interactive mode, you can use MaTESe with Streamlit:
+1. **Interactively**: If you prefer an interactive mode, you can use MaTESe with Streamlit:
 
     ```bash
     streamlit run src/demo.py
     ```
 
    This will start the Streamlit app. You can follow the instructions in the app to evaluate your translations.
+
+1. **Programmatically**: In the following example you can see how it is possible to use MaTESe metrics in a Python program:
+
+   ```python
+   from matese.metric import MaTESe
+
+   sources = ["这是一个中文的句子"]
+   candidates = ["This is a wrong translation in Chinese"]
+   references = ["This is a sentence in Chinese"]
+
+   metric = MaTESe.load_metric('matese') # pass 'matese-qe' for the reference-less metric
+   assessment = metric.evaluate(candidates, sources, references)[0]
+
+   print(assessment)
+   ```
+   
+   ```
+   {'spans': [{'offset': (10, 27), 'error': 'Major'}], 'score': -5}
+   ```
 
 
 ## Contact
