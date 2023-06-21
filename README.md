@@ -13,7 +13,7 @@ This repository contains the implementation of the MaTESe metrics, which have be
 
 ## About MaTESe
 
-MaTESe metrics tag the spans of a translation that contain an error, assigning it a level of severity that can be either 'Major' or 'Minor'. Additionally, the evaluation produces a numerical quality score, which is derived from combining the penalties linked to each erroneous span.  We've created two metrics: MaTESe and MaTESe-QE. The latter requires references to conduct the evaluation, whereas the former enables a reference-free evaluation.
+MaTESe metrics tag the error spans of a translation, assigning to them a level of severity that can be either 'Major' or 'Minor'. Additionally, the evaluation produces a numerical quality score, which is derived from combining the penalties linked to each error span.  We have created two metrics: MaTESe and MaTESe-QE. The former requires references to conduct the evaluation, whereas the latter enables a reference-free evaluation.
 
 
 ## How to Use
@@ -28,7 +28,7 @@ Clone the repository and install the required dependencies:
 
 ```bash
 cd MaTESe
-pip install -r requirements.txt
+pip install -r requirements.txt --extra-index-url https://download.pytorch.org/whl/cu116
 ```
 
 Download the checkpoints of the models and put them in the `checkpoints` directory
@@ -47,7 +47,7 @@ https://drive.google.com/file/d/1amAFlHQVpZXqtZWS014RzQ0xpdb6Mymn/view?usp=shari
 
 MaTESe can be used in two ways:
 
-1. **Data file evaluation**: To evaluate sentences stored in data files, you need to populate three files: `sources.txt`, `candidates.txt`, and `references.txt`, that are stored in the `data` directory. Each line in `sources.txt`, `candidates.txt` and `references.txt` must contain respectively a sentence in the source language, its candidate translation and the corresponding reference translation (`references.txt` is not needed if you are using MaTESe-QE).
+1. **Data file evaluation**: To evaluate sentences stored in data files, you need to populate three files: `sources.txt`, `candidates.txt`, and `references.txt`, which are stored in the `data` directory. Each line in `sources.txt`, `candidates.txt`, and `references.txt` must contain respectively a sentence in the source language, its candidate translation, and the corresponding reference translation (`references.txt` is not needed if you are using MaTESe-QE).
 
    To run the evaluation, use the following command:
 
