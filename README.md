@@ -29,6 +29,7 @@ Clone the repository and install the required dependencies:
 ```bash
 cd MaTESe
 pip install -r requirements.txt --extra-index-url https://download.pytorch.org/whl/cu116
+pip install -e ./src
 ```
 
 Download the checkpoints of the models and put them in the `checkpoints` directory
