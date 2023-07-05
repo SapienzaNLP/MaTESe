@@ -36,14 +36,14 @@ class MaTESe:
         if metric_name == "matese":
             checkpoint = torch.load(
                 utils.get_root_dir().joinpath('checkpoints', 'matese.ckpt'),
-                map_location=device
+                map_location='cpu'
             )
             with open(utils.get_root_dir().joinpath('configs', 'matese.json'), "r") as f:
                 config = json.load(f)
         elif metric_name == "matese-qe":
             checkpoint = torch.load(
                 utils.get_root_dir().joinpath('checkpoints', 'matese-qe.ckpt'),
-                map_location=device
+                map_location='cpu'
             )
             with open(utils.get_root_dir().joinpath('configs', 'matese-qe.json'), "r") as f:
                 config = json.load(f)
@@ -55,6 +55,7 @@ class MaTESe:
         ordered_labels = list(checkpoint["hyper_parameters"]["ordered_labels"])
         module = MateseModule(**config, tokenizer=tokenizer, ordered_labels=ordered_labels)
         module.load_state_dict(checkpoint["state_dict"])
+        module.to(device)
 
         metric = MaTESe(module)
 
