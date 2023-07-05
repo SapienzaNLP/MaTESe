@@ -60,10 +60,11 @@ class MaTESe:
 
         return metric
 
-    def batch_data(self, data) -> List[List[transformers.tokenization_utils.BatchEncoding]]:
+    def batch_data(self, data, batch_size=None) -> List[List[transformers.tokenization_utils.BatchEncoding]]:
+        _batch_size = batch_size if batch_size is not None else self.batch_size
         batches = []
-        for idx in range(0, len(data), self.batch_size):
-            batches.append(data[idx:idx + self.batch_size])
+        for idx in range(0, len(data), _batch_size):
+            batches.append(data[idx:idx + _batch_size])
         return batches
 
     def evaluate(
@@ -71,6 +72,7 @@ class MaTESe:
             candidates: List[str],
             sources: Optional[List[str]] = None,
             references: Optional[List[str]] = None,
+            batch_size: Optional[int] = None,
     ) -> List[Dict]:
         """
 
@@ -78,6 +80,7 @@ class MaTESe:
             candidates: a list of candidate translations
             sources: a list of source sentences
             references: a list of reference translations
+            batch_size: the batch size to use for the evaluation
 
         Returns: a list of dictionaries of the form
             {
@@ -100,7 +103,7 @@ class MaTESe:
             references,
         )
 
-        batches = self.batch_data(data)
+        batches = self.batch_data(data, batch_size)
         with torch.no_grad():
             output = [self.model.batch_predict(batch) for batch in batches]
 
