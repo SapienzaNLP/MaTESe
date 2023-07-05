@@ -15,6 +15,26 @@ This repository contains the implementation of the MaTESe metrics, which have be
 
 MaTESe metrics tag the error spans of a translation, assigning to them a level of severity that can be either 'Major' or 'Minor'. Additionally, the evaluation produces a numerical quality score, which is derived from combining the penalties linked to each error span.  We have created two metrics: MaTESe and MaTESe-QE. The former requires references to conduct the evaluation, whereas the latter enables a reference-free evaluation.
 
+If you find our paper or code useful, please reference this work in your paper:
+
+```bibtex
+@inproceedings{perrella-etal-2022-matese,
+    title = "{M}a{TES}e: Machine Translation Evaluation as a Sequence Tagging Problem",
+    author = "Perrella, Stefano  and
+      Proietti, Lorenzo  and
+      Scir{\`e}, Alessandro  and
+      Campolungo, Niccol{\`o}  and
+      Navigli, Roberto",
+    booktitle = "Proceedings of the Seventh Conference on Machine Translation (WMT)",
+    month = dec,
+    year = "2022",
+    address = "Abu Dhabi, United Arab Emirates (Hybrid)",
+    publisher = "Association for Computational Linguistics",
+    url = "https://aclanthology.org/2022.wmt-1.51",
+    pages = "569--577",
+}
+```
+
 
 ## How to Use
 
@@ -62,7 +82,7 @@ MaTESe can be used in several ways:
     python src/matese.py --metric matese-qe
     ```
 
-   These commands will populate the files `data/output.scores.txt` and `data/output.spans.txt` with the result of the evaluation.
+   These commands will create the files `data/output.scores.txt` and `data/output.spans.txt` with the result of the evaluation.
 
 1. **Interactively**: If you prefer an interactive mode, you can use MaTESe with Streamlit:
 
