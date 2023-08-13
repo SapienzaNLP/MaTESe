@@ -33,10 +33,10 @@ def main(args):
     metric = MaTESe.load_metric(args.metric, device)
 
     references = read_data_file(args.references) if not metric.reference_less else None
-    sources = read_data_file(args.sources)
+    sources = read_data_file(args.sources) if metric.reference_less else None
     candidates = read_data_file(args.candidates)
 
-    if (sources and candidates) or (sources and references and candidates):
+    if (sources and candidates) or (references and candidates):
 
         predictions = metric.evaluate(candidates, sources, references)
         spans = [prediction["spans"] for prediction in predictions]

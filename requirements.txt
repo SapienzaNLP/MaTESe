@@ -4,3 +4,4 @@ streamlit==1.22.0
 pytorch-lightning==2.0.2
 omegaconf==2.3.0
 pandas==2.0.2
+sentencepiece==0.1.99

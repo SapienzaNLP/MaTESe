@@ -1,6 +1,6 @@
 {
   "reference_less": true,
-  "transformer_model_name": "xlm-roberta-large",
+  "transformer_model_name": "microsoft/infoxlm-large",
   "encoder_layers": 2,
   "encoder_attention_heads": 8,
   "dropout_rate": 0.1,

@@ -35,7 +35,7 @@ def parse_arguments():
     )
     parser.add_argument(
         "--metric",
-        help="Name of the type of metric you want to use",
+        help="Name of the type of metric you want to use (has to be in ['matese', 'matese-qe', 'matese-en'])",
         type=str,
         default='matese',
     )

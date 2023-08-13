@@ -17,7 +17,7 @@ def main():
     st.title("MaTESe")
 
     metric_name = st.text_input(
-        "Write the metric name (either 'matese' or 'matese-qe')",
+        "Write the metric name (one in ['matese', 'matese-en', 'matese-qe'])",
     )
     device = st.selectbox(
         "Choose a device",
@@ -32,13 +32,16 @@ def main():
     if metric.reference_less:
         source = st.text_input("Insert the source sentence")
     else:
-        source = st.text_input("Insert the source sentence")
         reference = st.text_input("Insert the reference translation")
 
     if (metric.reference_less and source and candidate) or \
-            (not metric.reference_less and source and reference and candidate):
+            (not metric.reference_less and reference and candidate):
 
-        predictions = metric.evaluate([candidate], [source], [reference])
+        input_candidate = [candidate]
+        input_reference = None if metric.reference_less else [reference]
+        input_source = None if not metric.reference_less else [source]
+
+        predictions = metric.evaluate(input_candidate, input_source, input_reference)
         spans = [prediction['spans'] for prediction in predictions][0]
 
         errors = pd.DataFrame({"offset": [], "error": []})

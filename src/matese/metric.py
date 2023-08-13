@@ -4,6 +4,7 @@ import json
 
 import torch
 import transformers.tokenization_utils
+from transformers import AutoConfig
 from pytorch_lightning import LightningModule
 
 from matese.data import data_utils
@@ -40,6 +41,13 @@ class MaTESe:
             )
             with open(utils.get_root_dir().joinpath('configs', 'matese.json'), "r") as f:
                 config = json.load(f)
+        elif metric_name == "matese-en":
+            checkpoint = torch.load(
+                utils.get_root_dir().joinpath('checkpoints', 'matese-en.ckpt'),
+                map_location='cpu'
+            )
+            with open(utils.get_root_dir().joinpath('configs', 'matese-en.json'), "r") as f:
+                config = json.load(f)
         elif metric_name == "matese-qe":
             checkpoint = torch.load(
                 utils.get_root_dir().joinpath('checkpoints', 'matese-qe.ckpt'),
@@ -48,10 +56,11 @@ class MaTESe:
             with open(utils.get_root_dir().joinpath('configs', 'matese-qe.json'), "r") as f:
                 config = json.load(f)
         else:
-            print("Supported metrics: ['matese', 'matese-qe']")
+            print("Supported metrics: ['matese', 'matese-en', 'matese-qe']")
             exit()
 
-        tokenizer = utils.get_tokenizer(config['transformer_model_name'])
+        model_max_length = AutoConfig.from_pretrained(config['transformer_model_name']).max_position_embeddings
+        tokenizer = utils.get_tokenizer(config['transformer_model_name'], model_max_length=model_max_length)
         ordered_labels = list(checkpoint["hyper_parameters"]["ordered_labels"])
         module = MateseModule(**config, tokenizer=tokenizer, ordered_labels=ordered_labels)
         module.load_state_dict(checkpoint["state_dict"])
@@ -94,7 +103,7 @@ class MaTESe:
         if self.reference_less:
             assert sources
         else:
-            assert(sources and references)
+            assert references
 
         data = data_utils.preprocessing_pipeline(
             self.tokenizer,

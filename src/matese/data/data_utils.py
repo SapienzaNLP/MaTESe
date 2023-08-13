@@ -115,27 +115,23 @@ def tokenize(
 
         if reference_less:
             input_string = (
-                CANDIDATE_SPECIAL_TOKEN
-                + " "
-                + candidate
-                + " "
-                + SOURCE_SPECIAL_TOKEN
-                + " "
-                + source
+                    CANDIDATE_SPECIAL_TOKEN
+                    + " "
+                    + candidate
+                    + " "
+                    + SOURCE_SPECIAL_TOKEN
+                    + " "
+                    + source
             )
         else:
             input_string = (
-                CANDIDATE_SPECIAL_TOKEN
-                + " "
-                + candidate
-                + " "
-                + REFERENCE_SPECIAL_TOKEN
-                + " "
-                + reference
-                + " "
-                + SOURCE_SPECIAL_TOKEN
-                + " "
-                + source
+                    CANDIDATE_SPECIAL_TOKEN
+                    + " "
+                    + candidate
+                    + " "
+                    + REFERENCE_SPECIAL_TOKEN
+                    + " "
+                    + reference
             )
 
         encoded_input = tokenizer(input_string, return_tensors="pt", truncation=True)
@@ -151,13 +147,15 @@ def tokenize(
             candidate_start_idx = list(encoded_input.input_ids).index(
                 candidate_special_token_id
             )
-            if not reference_less:
+            if reference_less:
+                source_start_idx = list(encoded_input.input_ids).index(
+                    source_special_token_id
+                )
+            else:
                 reference_start_idx = list(encoded_input.input_ids).index(
                     reference_special_token_id
                 )
-            source_start_idx = list(encoded_input.input_ids).index(
-                source_special_token_id
-            )
+
         except ValueError as e:
             logging.debug(e)
             logging.debug("This sample has been truncated due to being too long!")
@@ -167,23 +165,8 @@ def tokenize(
             logging.debug("Tokens: ", encoded_input.tokens())
             num_truncated_samples += 1
 
-        if reference_start_idx is not None:
-            encoded_input["candidate_indices"] = list(
-                range(candidate_start_idx + 1, reference_start_idx)
-            )
-            if source_start_idx is not None:
-                encoded_input["reference_indices"] = list(
-                    range(reference_start_idx + 1, source_start_idx)
-                )
-                encoded_input["source_indices"] = list(
-                    range(source_start_idx + 1, len(encoded_input.tokens()))
-                )
-            else:
-                encoded_input["reference_indices"] = list(
-                    range(reference_start_idx + 1, len(encoded_input.tokens()))
-                )
-                encoded_input["source_indices"] = []
-        elif reference_less:
+        if reference_less:
+            encoded_input["reference_indices"] = []
             if source_start_idx is not None:
                 encoded_input["candidate_indices"] = list(
                     range(candidate_start_idx + 1, source_start_idx)
@@ -197,11 +180,18 @@ def tokenize(
                 )
                 encoded_input["source_indices"] = []
         else:
-            encoded_input["candidate_indices"] = list(
-                range(candidate_start_idx + 1, len(encoded_input.tokens()))
-            )
-            encoded_input["reference_indices"] = []
             encoded_input["source_indices"] = []
+            if reference_start_idx is not None:
+                encoded_input["candidate_indices"] = list(
+                    range(candidate_start_idx + 1, reference_start_idx)
+                )
+                encoded_input["reference_indices"] = list(
+                    range(reference_start_idx + 1, len(encoded_input.tokens()))
+                )
+            else:
+                encoded_input["candidate_indices"] = list(
+                    range(candidate_start_idx + 1, len(encoded_input.tokens()))
+                )
 
         encoded_input["tokens"] = encoded_input.tokens()
         encoded_input["candidate_special_token"] = CANDIDATE_SPECIAL_TOKEN

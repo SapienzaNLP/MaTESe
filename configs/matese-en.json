@@ -1,6 +1,6 @@
 {
   "reference_less": false,
-  "transformer_model_name": "microsoft/infoxlm-large",
+  "transformer_model_name": "microsoft/deberta-v3-large",
   "encoder_layers": 2,
   "encoder_attention_heads": 8,
   "dropout_rate": 0.1,
