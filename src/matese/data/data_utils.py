@@ -108,6 +108,9 @@ def tokenize(
         source = sample["source"]
         reference = sample["reference"]
 
+        if candidate is None or candidate == "":
+            candidate = EMPTY_STRING_SPECIAL_TOKEN
+            print("Warning: the provided candidate translation is empty!")
         if reference is None or reference == "":
             reference = EMPTY_STRING_SPECIAL_TOKEN
         if source is None or source == "":

@@ -9,7 +9,9 @@
 
 </div>
 
-This repository contains the implementation of the MaTESe metrics, which have been introduced in the paper "MaTESe: Machine Translation Evaluation as a Sequence Tagging Problem" presented at WMT 2022 ([read it here](https://aclanthology.org/2022.wmt-1.51/)).
+This repository contains the implementation of the MaTESe metrics, which have been introduced in the paper "MaTESe: Machine Translation Evaluation as a Sequence Tagging Problem" presented at WMT 2022 ([read it here](https://aclanthology.org/2022.wmt-1.51/)). 
+
+NOTE: the checkpoints in this repository correspond to the metrics submitted to WMT 2023 (except for MaTESe-QE, that has been re-trained but not re-submitted). 
 
 ## About MaTESe
 
@@ -54,29 +56,40 @@ pip install -e ./src
 
 Download the checkpoints of the models and put them in the `checkpoints` directory
 
-MaTESe:
+MaTESe (English only):
 ```
-https://drive.google.com/file/d/1rcrNFuR6gZfWPCfSm4HJHfjtALBEaXe6/view?usp=sharing
+https://drive.google.com/file/d/12LmxaQP_s42RKORHeII97hJlNyUS2Pgg/view?usp=sharing
 ```
 
-MaTESe-QE:
+MaTESe (Supports English, German and Russian as target languages):
 ```
-https://drive.google.com/file/d/1amAFlHQVpZXqtZWS014RzQ0xpdb6Mymn/view?usp=sharing
+https://drive.google.com/file/d/1uajyhYYCu3qPfHNIU3RR2NXsvNIyYL4L/view?usp=sharing
+```
+
+MaTESe-QE (Supports the language pairs `en-de`, `zh-en` and `en-ru`):
+```
+https://drive.google.com/file/d/1ZFYTNroMijr9-vYyc1WL0DPnmyrJfwa_/view?usp=sharing
 ```
 
 ### Usage
 
 MaTESe can be used in several ways:
 
-1. **From the command line**: You need to populate three files: `data/sources.txt`, `data/candidates.txt`, and `data/references.txt`. Each line of these files must contain respectively a sentence in the source language, its candidate translation, and the corresponding reference translation (`references.txt` is not needed if you are using MaTESe-QE).
+1. **From the command line**: You need to populate two out of the following three files: `data/sources.txt`, `data/candidates.txt`, and `data/references.txt`. Each line of these files must contain respectively a sentence in the source language, its candidate translation, and the corresponding reference translation (`sources.txt` is not needed if you are using MaTESe, `references.txt` is not needed if you are using MaTESe-QE).
 
    To run the evaluation using MaTESe, use the following command:
 
     ```bash
     python src/matese.py
     ```
+   
+   For the English-only version instead:
+    
+    ```bash
+    python src/matese.py --metric matese-en
+    ```
 
-   If you want to use MaTESe-QE instead:
+   And if you want to use MaTESe-QE:
    
     ```bash
     python src/matese.py --metric matese-qe
@@ -97,18 +110,17 @@ MaTESe can be used in several ways:
    ```python
    from matese.metric import MaTESe
 
-   sources = ["这是一个中文的句子"]
-   candidates = ["This is a wrong translation in Chinese"]
-   references = ["This is a sentence in Chinese"]
+   candidates = ["This is a wrong translation in English"]
+   references = ["This is a sentence in English"]
 
-   metric = MaTESe.load_metric('matese') # pass 'matese-qe' for the reference-less metric
-   assessment = metric.evaluate(candidates, sources, references)[0]
+   metric = MaTESe.load_metric('matese-en') # pass 'matese' or 'matese-qe' for the other versions
+   assessments = metric.evaluate(candidates, references=references)
 
-   print(assessment)
+   print(assessments[0])
    ```
    
    ```
-   {'spans': [{'offset': (10, 27), 'error': 'Major'}], 'score': -5}
+   {'spans': [{'offset': (9, 27), 'error': 'Major'}], 'score': -5}
    ```
 
 

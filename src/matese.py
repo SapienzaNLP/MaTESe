@@ -40,6 +40,12 @@ def parse_arguments():
         default='matese',
     )
     parser.add_argument(
+        "--batch-size",
+        help="The batch size to use for inference",
+        type=int,
+        default=32
+    )
+    parser.add_argument(
         "--cpu",
         help="Perform inference on CPU",
         action="store_true",

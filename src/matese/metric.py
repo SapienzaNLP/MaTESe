@@ -31,7 +31,12 @@ class MaTESe:
         self.batch_size = batch_size
 
     @classmethod
-    def load_metric(cls, metric_name: str, device: str = "cuda"):
+    def load_metric(
+            cls,
+            metric_name: str,
+            device: str = "cuda",
+            batch_size: int = 32,
+    ):
         device = torch.device(device)
 
         if metric_name == "matese":
@@ -66,7 +71,7 @@ class MaTESe:
         module.load_state_dict(checkpoint["state_dict"])
         module.to(device)
 
-        metric = MaTESe(module)
+        metric = MaTESe(module, batch_size=batch_size)
 
         return metric
 
@@ -100,10 +105,11 @@ class MaTESe:
 
         """
 
+        assert candidates, "You have not provided any candidate translations!"
         if self.reference_less:
-            assert sources
+            assert sources, "MaTESe-QE requires the source sentences for the evaluation!"
         else:
-            assert references
+            assert references, "MaTESe requires the reference translations for the evaluation!"
 
         data = data_utils.preprocessing_pipeline(
             self.tokenizer,
@@ -142,7 +148,6 @@ class MaTESe:
                                   f"Prediction: {prediction}")
                     exit()
 
-            # setting the minimum score to -25 as it is in mqm
             if self.minimum_score is not None:
                 score = score if score > self.minimum_score else self.minimum_score
             scores.append(score)
