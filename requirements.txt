@@ -1,5 +1,5 @@
 torch==1.13.1+cu116 
-transformers==4.29.2
+transformers==4.30.0
 streamlit==1.22.0
 pytorch-lightning==2.0.2
 omegaconf==2.3.0
