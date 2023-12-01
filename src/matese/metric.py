@@ -1,6 +1,7 @@
 from typing import *
 import logging
 import json
+from tqdm import tqdm
 
 import torch
 import transformers.tokenization_utils
@@ -17,25 +18,21 @@ class MaTESe:
     def __init__(
             self,
             model: LightningModule,
-            batch_size: int = 32,
             minimum_score: Optional[int] = -25,
     ):
         super(MaTESe, self).__init__()
 
         self.model = model
-        assert(model.eval())
 
         self.reference_less = self.model.reference_less
         self.tokenizer = self.model.tokenizer
         self.minimum_score = minimum_score
-        self.batch_size = batch_size
 
     @classmethod
     def load_metric(
             cls,
             metric_name: str,
-            device: str = "cuda",
-            batch_size: int = 32,
+            device: str = "cuda"
     ):
         device = torch.device(device)
 
@@ -64,22 +61,21 @@ class MaTESe:
             print("Supported metrics: ['matese', 'matese-en', 'matese-qe']")
             exit()
 
-        model_max_length = AutoConfig.from_pretrained(config['transformer_model_name']).max_position_embeddings
-        tokenizer = utils.get_tokenizer(config['transformer_model_name'], model_max_length=model_max_length)
+        tokenizer = utils.get_tokenizer(config['transformer_model_name'])
         ordered_labels = list(checkpoint["hyper_parameters"]["ordered_labels"])
         module = MateseModule(**config, tokenizer=tokenizer, ordered_labels=ordered_labels)
         module.load_state_dict(checkpoint["state_dict"])
         module.to(device)
 
-        metric = MaTESe(module, batch_size=batch_size)
+        metric = MaTESe(module)
 
         return metric
 
-    def batch_data(self, data, batch_size=None) -> List[List[transformers.tokenization_utils.BatchEncoding]]:
-        _batch_size = batch_size if batch_size is not None else self.batch_size
+    @classmethod
+    def batch_data(cls, data, batch_size: int = 32) -> List[List[transformers.tokenization_utils.BatchEncoding]]:
         batches = []
-        for idx in range(0, len(data), _batch_size):
-            batches.append(data[idx:idx + _batch_size])
+        for idx in range(0, len(data), batch_size):
+            batches.append(data[idx:idx + batch_size])
         return batches
 
     def evaluate(
@@ -87,7 +83,7 @@ class MaTESe:
             candidates: List[str],
             sources: Optional[List[str]] = None,
             references: Optional[List[str]] = None,
-            batch_size: Optional[int] = None,
+            batch_size: int = 32,
     ) -> List[Dict]:
         """
 
@@ -105,11 +101,14 @@ class MaTESe:
 
         """
 
-        assert candidates, "You have not provided any candidate translations!"
+        if candidates is None:
+            raise ValueError("You have not provided any candidate translations!")
         if self.reference_less:
-            assert sources, "MaTESe-QE requires the source sentences for the evaluation!"
+            if sources is None:
+                raise ValueError("MaTESe-QE requires the source sentences for the evaluation!")
         else:
-            assert references, "MaTESe requires the reference translations for the evaluation!"
+            if references is None:
+                raise ValueError("MaTESe requires the reference translations for the evaluation!")
 
         data = data_utils.preprocessing_pipeline(
             self.tokenizer,
@@ -121,7 +120,9 @@ class MaTESe:
 
         batches = self.batch_data(data, batch_size)
         with torch.no_grad():
-            output = [self.model.batch_predict(batch) for batch in batches]
+            output = []
+            for batch in tqdm(batches, total=len(batches)):
+                output += [self.model.batch_predict(batch)]
 
         predictions: List[List[Dict]] = [
             sparse_pred for batch_output in output for sparse_pred in batch_output['sparse_predictions']

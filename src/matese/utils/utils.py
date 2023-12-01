@@ -16,11 +16,10 @@ def get_root_dir():
     return Path(__file__).parent.parent.parent.parent
 
 
-def get_tokenizer(transformer_model_name: str, model_max_length: Optional[int] = 512) -> PreTrainedTokenizer:
+def get_tokenizer(transformer_model_name: str, model_max_length: int = 512) -> PreTrainedTokenizer:
     tokenizer = AutoTokenizer.from_pretrained(transformer_model_name)
 
-    if model_max_length:
-        tokenizer.model_max_length = model_max_length
+    tokenizer.model_max_length = model_max_length
 
     source_special_token = AddedToken(
         SOURCE_SPECIAL_TOKEN,

@@ -17,7 +17,7 @@ class MQMSeverities:
     minor: str = "Minor"
     neutral: str = "Neutral"
 
-    # no-error severity is a placeholder for when the error was a no-error
+    # no-error severity is a placeholder
     no_error: str = "No-error"
 
 
@@ -28,8 +28,6 @@ def preprocessing_pipeline(
     sources: Optional[List[str]] = None,
     references: Optional[List[str]] = None,
 ) -> List[BatchEncoding]:
-
-    assert sources or references, "Either sources or references must be not None!"
 
     data = [
         {
