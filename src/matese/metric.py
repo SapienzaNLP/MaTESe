@@ -65,6 +65,7 @@ class MaTESe:
         ordered_labels = list(checkpoint["hyper_parameters"]["ordered_labels"])
         module = MateseModule(**config, tokenizer=tokenizer, ordered_labels=ordered_labels)
         module.load_state_dict(checkpoint["state_dict"])
+        module.eval()
         module.to(device)
 
         metric = MaTESe(module)
