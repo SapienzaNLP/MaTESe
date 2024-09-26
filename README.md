@@ -9,9 +9,9 @@
 
 </div>
 
-This repository contains the implementation of the MaTESe metrics, which have been introduced in the paper "MaTESe: Machine Translation Evaluation as a Sequence Tagging Problem" presented at WMT 2022 ([read it here](https://aclanthology.org/2022.wmt-1.51/)). 
+This repository contains the implementation of the MaTESe metrics, introduced in the paper "MaTESe: Machine Translation Evaluation as a Sequence Tagging Problem" presented at WMT 2022 ([read it here](https://aclanthology.org/2022.wmt-1.51/)). 
 
-NOTE: the checkpoints in this repository correspond to the metrics submitted to WMT 2023 (except for MaTESe-QE, that has been re-trained but not re-submitted). 
+NOTE: the checkpoints in this repository correspond to the metrics submitted to WMT 2023, with the exception of MaTESe-QE, which was re-trained but not re-submitted. These metrics were trained using [MQM assessments](https://github.com/google/wmt-mqm-human-evaluation) from WMT20 to WMT22.
 
 ## About MaTESe
 
